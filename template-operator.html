@@ -1,0 +1,82 @@
+<link rel="import" href="./bower_components/polymer/polymer.html">
+<link rel="import" href="./bower_components/iron-signals/iron-signals.html">
+<link rel="import" href="./bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="./bower_components/paper-button/paper-button.html">
+<link rel="import" href="./bower_components/paper-input/paper-input.html">
+<link rel="import" href="./bower_components/polymerfire/firebase-document.html">
+
+<dom-module id="template-operator">
+    <template>
+        <style>
+            paper-dialog-scrollable p{
+                padding: 0 20px;
+                margin: 0;
+            }
+        </style>
+        <iron-signals on-iron-signal-template-operation="handleComponentModification"></iron-signals>
+        <paper-dialog modal>
+            <h2>Invalid Template Name</h2>
+            <paper-dialog-scrollable>
+                <p>It seems that your template doesnt have a name yet. Please enter a name for this template.</p>
+                <p><paper-input label="Template Name" value="{{name}}" autofocus required></paper-input></p>
+            </paper-dialog-scrollable>
+            <div class="buttons">
+                <paper-button on-click="validateTemplateName">Save Template Name</paper-button>
+            </div>
+        </paper-dialog>
+        <firebase-document disabled
+            path="/templates/{{name}}"
+            data="{{noteData}}">
+        </firebase-document>
+    </template>
+    <script>
+        Polymer({
+            is: 'template-operator',
+
+            properties: {
+                name: {
+                    type: String,
+                    value: ''
+                },
+
+                delegatedData: {
+                    type: Object
+                }
+            },
+
+            handleComponentModification: function(e, detail) {
+                console.log(detail);
+                this.checkForName()
+                .then(() => {
+                    console.log('all correct', detail);
+                })
+                .catch(() => {
+                    this.delegatedData = detail;
+                    this.showNamePopup();
+                });
+
+            },
+
+            checkForName: function() {
+                return new Promise( (resolve, reject) => {
+                    if(!!this.name) {
+                        resolve();
+                    }
+                    reject();
+                });
+            },
+
+            showNamePopup: function() {
+                this.$$('paper-dialog').open();
+            },
+
+            validateTemplateName: function() {
+                if(!!this.name) {
+                    this.$$('paper-dialog').close();
+                    this.handleComponentModification(null, this.delegatedData);
+                    this.delegatedData = null;
+                }
+            }
+        });
+    </script>
+</dom-module>

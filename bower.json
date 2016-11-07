@@ -1,0 +1,25 @@
+{
+  "name": "template-operator",
+  "homepage": "https://github.com/Pancake-CMS/template-operator",
+  "authors": [
+    "Prateek Jadhwani <prateekjadhwani@users.noreply.github.com>"
+  ],
+  "description": "A web component built using Polymer for the Pancake project whose purpose is to listen for component events like add, move, remove, copy and update the firebase copy",
+  "main": "template-operator.html",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "^1.7.0",
+    "iron-signals": "PolymerElements/iron-signals#^1.0.3",
+    "paper-dialog": "PolymerElements/paper-dialog#^1.1.0",
+    "paper-button": "PolymerElements/paper-button#^1.0.14",
+    "paper-input": "PolymerElements/paper-input#^1.1.20",
+    "polymerfire": "firebase/polymerfire#^0.10.2"
+  }
+}

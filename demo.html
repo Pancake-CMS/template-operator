@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="import" href="./bower_components/polymer/polymer.html">
+        <link rel="import" href="./template-operator.html">
+    </head>
+    <body>
+        <template-operator></template-operator>
+        <template is="dom-bind" id="my-app">
+            <input type="text" id="operation" placeholder="Operation">
+            <input type="text" id="path" placeholder="Path">
+            <button onClick="handleOperation()">Trigger Operation</button>
+        </template>
+        <script type="text/javascript">
+                function handleOperation() {
+                    document.querySelector('#my-app').fire('iron-signal', {
+                       name: 'template-operation',
+                       data: {
+                           operation: document.querySelector('#operation').value,
+                           path: document.querySelector('#path').value
+                       }
+                    });
+                }
+            </script>
+    </body>
+</html>
