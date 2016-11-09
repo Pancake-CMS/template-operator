@@ -1,9 +1,9 @@
-<link rel="import" href="./bower_components/polymer/polymer.html">
-<link rel="import" href="./bower_components/iron-signals/iron-signals.html">
-<link rel="import" href="./bower_components/paper-dialog/paper-dialog.html">
-<link rel="import" href="./bower_components/paper-button/paper-button.html">
-<link rel="import" href="./bower_components/paper-input/paper-input.html">
-<link rel="import" href="./bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-signals/iron-signals.html">
+<link rel="import" href="../paper-dialog/paper-dialog.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../polymerfire/firebase-document.html">
 
 <dom-module id="template-operator">
     <template>
@@ -14,7 +14,7 @@
             }
         </style>
         <iron-signals on-iron-signal-template-operation="handleComponentModification"></iron-signals>
-        <paper-dialog modal>
+        <paper-dialog>
             <h2>Invalid Template Name</h2>
             <paper-dialog-scrollable>
                 <p>It seems that your template doesnt have a name yet. Please enter a name for this template.</p>
@@ -24,9 +24,7 @@
                 <paper-button on-click="validateTemplateName">Save Template Name</paper-button>
             </div>
         </paper-dialog>
-        <firebase-document disabled
-            path="/templates/{{name}}"
-            data="{{noteData}}">
+        <firebase-document>
         </firebase-document>
     </template>
     <script>
@@ -45,10 +43,9 @@
             },
 
             handleComponentModification: function(e, detail) {
-                console.log(detail);
                 this.checkForName()
                 .then(() => {
-                    console.log('all correct', detail);
+                    this.updateDataInFirebase(detail);
                 })
                 .catch(() => {
                     this.delegatedData = detail;
@@ -64,6 +61,18 @@
                     }
                     reject();
                 });
+            },
+
+            updateDataInFirebase: function(data) {
+                var firebaseEl = this.$$('firebase-document'),
+                    fbData = JSON.parse(data.data),
+                    path = '/templates/' + this.name + '/' + data.path;
+
+                if(data.operation == 'add') {
+                    firebaseEl.setStoredValue(path + '/' + data.id, fbData);
+                }
+
+                this.$$('paper-dialog').close();
             },
 
             showNamePopup: function() {
