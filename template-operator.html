@@ -69,7 +69,10 @@
                     path = '/templates/' + this.name + '/' + data.path;
 
                 if(data.operation == 'add') {
-                    firebaseEl.setStoredValue(path + '/' + data.id, fbData);
+                    firebaseEl.setStoredValue(path + '/' + data.id, {
+                        name: fbData.name,
+                        properties: fbData.properties
+                    });
                 }
 
                 this.$$('paper-dialog').close();
