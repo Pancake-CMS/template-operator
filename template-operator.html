@@ -82,12 +82,10 @@
             updateDataInFirebase: function(data) {
 
                 var firebaseEl = this.$$('firebase-document'),
-                    path = '/templates/' + this.name + '/' + data.id + data.path;
+                    path = '/templates/' + this.name + '/' + data.id + data.path + '/properties';
 
                 if(data.operation == 'component-modified') {
-                    firebaseEl.setStoredValue(path, {
-                        properties: data.properties
-                    });
+                    firebaseEl.setStoredValue(path, data.properties);
                 }
 
 
