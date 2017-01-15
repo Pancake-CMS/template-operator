@@ -43,15 +43,18 @@
             },
 
             handleComponentModification: function(e, detail) {
-                this.checkForName()
-                .then(() => {
+                if(detail.operation == 'add') {
+                    this.checkForName()
+                    .then(() => {
+                        this.createNewTemplateInFirebase(detail);
+                    })
+                    .catch(() => {
+                        this.delegatedData = detail;
+                        this.showNamePopup();
+                    });
+                } else {
                     this.updateDataInFirebase(detail);
-                })
-                .catch(() => {
-                    this.delegatedData = detail;
-                    this.showNamePopup();
-                });
-
+                }
             },
 
             checkForName: function() {
@@ -63,19 +66,31 @@
                 });
             },
 
-            updateDataInFirebase: function(data) {
+            createNewTemplateInFirebase: function(data) {
                 var firebaseEl = this.$$('firebase-document'),
                     fbData = JSON.parse(data.data),
                     path = '/templates/' + this.name + '/' + data.path;
 
-                if(data.operation == 'add') {
-                    firebaseEl.setStoredValue(path + '/' + data.id, {
-                        name: fbData.name,
-                        properties: fbData.properties
+                firebaseEl.setStoredValue(path + '/' + data.id, {
+                    name: fbData.name,
+                    properties: fbData.properties
+                });
+
+                this.$$('paper-dialog').close();
+            },
+
+            updateDataInFirebase: function(data) {
+
+                var firebaseEl = this.$$('firebase-document'),
+                    path = '/templates/' + this.name + '/' + data.id + data.path;
+
+                if(data.operation == 'component-modified') {
+                    firebaseEl.setStoredValue(path, {
+                        properties: data.properties
                     });
                 }
 
-                this.$$('paper-dialog').close();
+
             },
 
             showNamePopup: function() {
@@ -87,6 +102,9 @@
                     this.$$('paper-dialog').close();
                     this.handleComponentModification(null, this.delegatedData);
                     this.delegatedData = null;
+
+                    this.set('route.path', '/templates/edit/' + this.name);
+
                 }
             }
         });
