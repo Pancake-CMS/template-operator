@@ -73,7 +73,8 @@
 
                 firebaseEl.setStoredValue(path + '/' + data.id, {
                     name: fbData.name,
-                    properties: fbData.properties
+                    properties: fbData.properties,
+                    components: fbData.components || {}
                 });
 
                 this.$$('paper-dialog').close();
@@ -82,13 +83,11 @@
             updateDataInFirebase: function(data) {
 
                 var firebaseEl = this.$$('firebase-document'),
-                    path = '/templates/' + this.name + '/' + data.id + data.path + '/properties';
+                    path = '/templates/' + this.name + data.path + data.id +  '/properties';
 
                 if(data.operation == 'component-modified') {
                     firebaseEl.setStoredValue(path, data.properties);
                 }
-
-
             },
 
             showNamePopup: function() {
